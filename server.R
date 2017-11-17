@@ -16,6 +16,13 @@ countryRevSum <- data %>%
   group_by(Country) %>%
   summarise(Revenue = sum(Revenue)) %>% arrange(desc(Revenue))
 
+slices <- countryRevSum$Revenue
+View(slices)
+pct <- round(slices/sum(slices)*100)
+lbls <- paste(countryRevSum$Country, pct) # add percents to labels
+lbls <- paste(lbls,"%",sep="") # ad % to labels
+
+
 #bottom two countries as per revenue
 leastPerformanceCountries <- tail(countryRevSum,2)
 
@@ -51,7 +58,19 @@ shinyServer(function(input,output){
   })
 
   output$piechart <- renderPlot({
-    pie3D(countryRevSum$Revenue,labels = countryRevSum$Country,radius = 1.2, cex = 0.3, explode = 1)
+    pie3D(countryRevSum$Revenue,labels=paste(lbls,sep = "\n"),
+            radius = 1.2, labelcex = 1, cex = 0.3, explode = 1)
+  })
+
+  #onhover tooltip functionality for piechart
+  output$dynamic <- renderUI({
+    req(input$plot_hover)
+    verbatimTextOutput("vals")
+  })
+
+  output$vals <- renderPrint({
+    hover <- input$plot_hover
+    lbls
   })
 
   output$country_rev = DT::renderDataTable({

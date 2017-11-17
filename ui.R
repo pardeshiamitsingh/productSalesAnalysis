@@ -41,7 +41,8 @@ shinyUI(dashboardPage(
               ),
               fluidRow(
                 box(title = "Country-wise Revenue", solidHeader = T,
-                    status = "success",  plotOutput("piechart")),
+                    status = "success",  plotOutput("piechart", hover = hoverOpts(id ="plot_hover", delay = 0)),
+                    uiOutput("dynamic")),
                 box(title = "Sales Revenue Data", status = "warning", solidHeader = T,
                     background = "teal",
                     DT::dataTableOutput("country_rev")
